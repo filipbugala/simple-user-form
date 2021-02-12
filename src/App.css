@@ -50,6 +50,12 @@ body {
   justify-content: center;
 }
 
+@media only screen and (max-width: 600px) {
+  .user-data-section {
+    flex-direction: column;
+  }
+}
+
 .user-data {
   padding: 0 1rem;
 }
@@ -58,11 +64,6 @@ body {
   padding: 1rem 0 0 1rem;
 }
 
-@media only screen and (max-width: 600px) {
-  .user-data-section {
-    flex-direction: column;
-  }
-}
 
 .footer{
   /* display: flex; */

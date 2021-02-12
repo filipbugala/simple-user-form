@@ -18,22 +18,32 @@ export const UserRegister = (props) => {
   }
 
   const validateString = (value) => {
-    if (!value) {
-      return;
-    }
-    if (!(typeof value === 'string' && value.length > 0)) return 'IS_REQ';
+    if (value.length < 1) {
+      return 'TOO_SHORT'
+    };
     return;
   }
 
   const validateEmail = (value) => {
-    if (!value) {
-      return;
-    }
-    var re = /\S+@\S+\.\S+/;
-    if (re.test(value)) {
+    if (value.length < 5) {
+      return 'TOO_SHORT'
+    };
+    const regexp = /\S+@\S+\.\S+/;
+    if (regexp.test(value)) {
       return undefined;
     };
     return 'MUST_BE_MAIL';
+  }
+
+  const validateNumber = (value) => {
+    if (value.length < 9) {
+      return 'TOO_SHORT'
+    };
+    const regexp = /^[0-9]*$/;
+    if (regexp.test(value)) {
+      return undefined;
+    };
+    return 'MUST_BE_NUMBER'
   }
 
   return (
@@ -49,22 +59,10 @@ export const UserRegister = (props) => {
           {({ formProps, dirty, submitting }) => (
             <form {...formProps}>
               <Field name="firstname" defaultValue="" label="First Name" isRequired validate={validateString}>
-                {({ fieldProps, error, valid }) =>
-                  <Fragment>
-                    <TextField {...fieldProps} />
-                    {!valid && (
-                      <ErrorMessage>
-                        This field is required
-                      </ErrorMessage>
-                    )}
-                  </Fragment>
-                }
-              </Field>
-              <Field name="lastname" defaultValue="" label="Last Name" isRequired>
                 {({ fieldProps, error }) =>
                   <Fragment>
                     <TextField {...fieldProps} />
-                    {error && (
+                    {error === 'TOO_SHORT' && (
                       <ErrorMessage>
                         This field is required
                       </ErrorMessage>
@@ -72,13 +70,52 @@ export const UserRegister = (props) => {
                   </Fragment>
                 }
               </Field>
-              <Field name="email" defaultValue="" label="Email" isRequired>
-                {({ fieldProps }) => <TextField {...fieldProps} validate={validateString} />}
+              <Field name="lastname" defaultValue="" label="Last Name" isRequired validate={validateString}>
+                {({ fieldProps, error }) =>
+                  <Fragment>
+                    <TextField {...fieldProps} />
+                    {error === 'TOO_SHORT' && (
+                      <ErrorMessage>
+                        This is too short to be an email adress
+                      </ErrorMessage>
+                    )}
+                  </Fragment>
+                }
               </Field>
-              <Field name="phone" defaultValue="" label="Phone" isRequired>
-                {({ fieldProps }) => <TextField {...fieldProps} validate={validateString} />}
+              <Field name="email" defaultValue="" label="Email" isRequired validate={validateEmail}>
+                {({ fieldProps, error }) =>
+                <Fragment>
+                  <TextField {...fieldProps} />
+                  {error === 'TOO_SHORT' && (
+                    <ErrorMessage>
+                      This is too short to be an email adress
+                    </ErrorMessage>
+                  )}
+                  {error === 'MUST_BE_MAIL' && (
+                    <ErrorMessage>
+                      This is not a valid email adress
+                    </ErrorMessage>
+                  )}
+                </Fragment>
+                }
               </Field>
-  
+              <Field name="phone" defaultValue="" label="Phone" isRequired validate={validateNumber}>
+                {({ fieldProps, error }) =>
+                <Fragment>
+                  <TextField {...fieldProps} />
+                  {error === 'TOO_SHORT' && (
+                    <ErrorMessage>
+                      This is too short to be a phone number
+                    </ErrorMessage>
+                  )}
+                  {error === 'MUST_BE_NUMBER' && (
+                    <ErrorMessage>
+                      This is not a valid phone number
+                    </ErrorMessage>
+                  )}
+              </Fragment>
+                }
+              </Field>
               <FormFooter>
                 <Button type="submit" appearance="primary" isDisabled={!dirty || submitting}>Submit</Button>
               </FormFooter>
